@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <script src= "https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"> </script>
+ 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.1/shim.min.js"></script>
+    <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.1/xlsx.full.min.js'></script>
+    <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.1/jszip.js'></script>
+    <script lang="javascript" src="FileSaver.min.js"></script>
+    <style>
+            
+        .container{overflow: hidden}
+        .tab{float: left;}
+        .tab-2{margin-left: 50px}
+        .tab-2 input{display: block;margin-bottom: 10px}
+        tr{transition:all .25s ease-in-out}
+        tr:hover{background-color:#EEE;cursor: pointer}
+        body {
+        background-image: url("1.jpg");
+        background-color: #cccccc;
+        }
+        
+    </style>
+</head>
+
+<body>
+ <div id="navbar">  
+     
+    <input type="file" id="input-excel" />
+     
+ </div>   
+ 
+ <div class="container">
+    <div class="tab tab-1">
+        <table id="table" border="1">
+
+            <table id="wrapper" border="1" contenteditable="true">
+                <tbody contenteditable="true" >
+                </tbody>
+                </table>
+                <br>
+                <input type="button" value="export" onclick="exportToExcel('wrapper')" />
+
+        </div>
+        
+        <div class="tab tab-2">
+            Name :<input type="text" name="name" id="name" > <br>
+            Date of Birth:<input type="text" name="dob" id="dob">  <br>
+            ID :<input type="number" name="id" id="id"> <br>
+            Department :<input type="text" name="dept" id="dept"> <br>
+            Salary:<input type="text" name="sal" id="sal"> <br>
+
+           
+            <button onclick="addHtmlTableRow();">Add</button>
+            <button onclick="removeSelectedRow();">Remove</button>
+        </div>
+    </div>
+ 
+ 
+
+ <script>
+    $('#input-excel').change(function(e){
+        var reader = new FileReader();
+
+         reader.readAsArrayBuffer(e.target.files[0]);
+         reader.onload = function(e) {
+
+        var data = new Uint8Array(reader.result);
+        var wb = XLSX.read(data, {type: 'array'});
+
+        var htmlstr = XLSX.write(wb,{ type: 'binary', bookType: 'html'});
+        $('#wrapper')[0].innerHTML += htmlstr;
+        selectedRowToInput();
+    }
+   
+})
+
+    function exportToExcel(tableId){
+
+        let tableData = document.getElementById(tableId).outerHTML;
+         tableData = tableData.replace(/<input[^>]*>|<\/input>/gi, ""); //remove input params
+
+        let a = document.createElement('a')
+        let dataType = 'data:application/vnd.ms-excel';
+
+             a.href = `data:application/vnd.ms-excel, ${encodeURIComponent(tableData)}`
+             a.download = 'excel'  + '.xls'
+             a.click()
+    }
+    
+    function checkEmptyInput(){
+
+                var isEmpty = false,
+                    name = document.getElementById("name").value,
+                    dob = document.getElementById("dob").value,
+                    id = document.getElementById("id").value;
+                    dept = document.getElementById("dept").value;
+                    sal = document.getElementById("sal").value;
+                if(name === ""){
+                    alert("Name cannot Be Empty");
+                    isEmpty = true;
+                }
+                else if(dob === ""){
+                    alert("DOB Cannot Be Empty");
+                    isEmpty = true;
+                }
+                else if(id === ""){
+                    alert("ID Cannot Be Empty");
+                    isEmpty = true;
+                }
+                else if(dept === ""){
+                    alert("Dept Cannot Be Empty");
+                    isEmpty = true;
+                }
+                else if(sal === ""){
+                    alert("Salary Cannot Be Empty");
+                    isEmpty = true;
+                }
+                return isEmpty;
+    }
+            // add Row
+            function addHtmlTableRow()
+            {
+                // get the table by id
+                // create a new row and cells
+                // get value from input text
+                // set the values into row cell's
+                if(!checkEmptyInput()){
+
+                var newRow = wrapper.insertRow(wrapper.length),
+                    cell1 = newRow.insertCell(0),
+                    cell2 = newRow.insertCell(1),
+                    cell3 = newRow.insertCell(2),
+                    cell4 = newRow.insertCell(3),
+                    cell5 = newRow.insertCell(4)
+                    name = document.getElementById("name").value,
+                    dob = document.getElementById("dob").value,
+                    id = document.getElementById("id").value;
+                    dept = document.getElementById("dept").value;
+                    sal = document.getElementById("sal").value;
+
+                cell1.innerHTML = name;
+                cell2.innerHTML = dob;
+                cell3.innerHTML = id;
+                cell4.innerHTML = dept;
+                cell5.innerHTML = sal
+                // call the function to set the event to the new row
+                
+            }
+            }
+            // display selected row data into input text
+            function selectedRowToInput()
+            {
+                for(var i = 1; i < wrapper.rows.length; i++)
+                {
+                    wrapper.rows[i].onclick = function()
+                    {
+                      // get the seected row index
+                      rIndex = this.rowIndex;
+                      document.getElementById("name").value = this.cells[0].innerHTML;
+                      document.getElementById("dob").value = this.cells[1].innerHTML;
+                      document.getElementById("id").value = this.cells[2].innerHTML;
+                      document.getElementById("dept").value = this.cells[3].innerHTML;
+                      document.getElementById("sal").value = this.cells[4].innerHTML;
+                    };
+                }
+            }
+      selectedRowToInput();
+            
+      function removeSelectedRow()
+            {
+                wrapper.deleteRow(rIndex);
+                // clear input text
+                document.getElementById("name").value = "";
+                document.getElementById("dob").value = "";
+                document.getElementById("id").value = "";
+                document.getElementById("dept").value = "";
+                document.getElementById("sal").value = ""
+            }
+
+    </script>
+</body>
+
+</html>
