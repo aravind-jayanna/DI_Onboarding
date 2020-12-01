@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
+<title>Excel Table Display</title>
     <script src= "https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"> </script>
  
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.1/shim.min.js"></script>
@@ -11,6 +11,7 @@
     <style>
             
         .container{overflow: hidden}
+        .heading{color: rgb(184, 11, 228);}
         .tab{float: left;}
         .tab-2{margin-left: 50px}
         .tab-2 input{display: block;margin-bottom: 10px}
@@ -19,29 +20,29 @@
         body {
         background-image: url("1.jpg");
         background-color: #cccccc;
-        }
-        
+        }   
     </style>
 </head>
 
 <body>
- <div id="navbar">  
-     
-    <input type="file" id="input-excel" />
-     
- </div>   
- 
+   <h1 class='heading'>Employee Data</h1>
  <div class="container">
     <div class="tab tab-1">
-        <table id="table" border="1">
-
-            <table id="wrapper" border="1" contenteditable="true">
+    
+   
+            
+            <table id="wrapper" border="5" contenteditable="true">
                 <tbody contenteditable="true" >
                 </tbody>
                 </table>
+
+                <div id="navbar">  
+                    <br>
+                    <input type="file" id="input-excel" />
+                 </div>
+
                 <br>
                 <input type="button" value="export" onclick="exportToExcel('wrapper')" />
-
         </div>
         
         <div class="tab tab-2">
@@ -55,9 +56,7 @@
             <button onclick="addHtmlTableRow();">Add</button>
             <button onclick="removeSelectedRow();">Remove</button>
         </div>
-    </div>
- 
- 
+    </div>  
 
  <script>
     $('#input-excel').change(function(e){
@@ -72,8 +71,7 @@
         var htmlstr = XLSX.write(wb,{ type: 'binary', bookType: 'html'});
         $('#wrapper')[0].innerHTML += htmlstr;
         selectedRowToInput();
-    }
-   
+    }  
 })
 
     function exportToExcel(tableId){
