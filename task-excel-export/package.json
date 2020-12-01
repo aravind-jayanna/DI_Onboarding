@@ -1,7 +1,6 @@
 {
   "name": "export",
   "version": "1.0.0",
-  "description": "",
   "main": "like.js",
   "dependencies": {
     "address": "^1.1.2",
@@ -14,5 +13,6 @@
     "start": "node server.js"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "description": ""
 }
